@@ -19,7 +19,7 @@ class CategoryController extends Controller
     public function getCategories(Request $request)
     {
         if ($request->ajax()) {
-            $query = TBCategory::where('Parent_id',null);
+            $query = TBCategory::where('Active', 1);
 
             if ($request->has('search_categoryname')) {
                 $query->where('Category_name', 'like', "%$request->search_categoryname%");
@@ -51,41 +51,26 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $ID = Str::uuid();
         // ส่งข้อมูลไปยัง View
-        return view('categories.create', compact('ID'));
+        return view('categories.create');
     }
 
     public function insertCategory(Request $request)
     {
-        DB::beginTransaction();
         try {
+            $categories = new TBCategory();
+            $categories->Category_name = $request->Category_name;
+            $categories->Active = 1;
+            $categories->Create_by = Auth::user()->Username;
+            $categories->Create_date = now();
 
-            // รับข้อมูลหมวดหมู่ที่ส่งมาจากฟอร์ม
-            $categories = $request->input('Category_name');
-
-            foreach ($categories as $key => $value) {
-                $category = new TBCategory();
-                $category->ID = $key;
-                $category->Category_name = $request->Category_name[$key];
-                $category->Level = $request->Level[$key];
-                $category->Active = 1;
-                $category->Main_id = $request->Main_id;
-                $category->Parent_id = $request->Parent_id[$key];
-                $category->Sortorder = $request->Sortorder[$key];
-                $category->Create_by = Auth::user()->Username; // อาจจะใช้ auth()->user()->name แทน
-                $category->Create_date = now();
-
-                $category->save();
-            }
-            DB::commit();
+            $categories->save();
             // ส่ง Response กลับไป
             return response()->json([
                 'success' => true,
                 'message' => 'บันทึกข้อมูลสำเร็จ!',
             ]);
         } catch (\Exception $e) {
-            DB::rollBack(); 
             // ส่ง Error Response หากเกิดข้อผิดพลาด
             return response()->json(
                 [
@@ -100,44 +85,27 @@ class CategoryController extends Controller
     public function edit($id)
     {
         // ดึงข้อมูลหมวดหมู่ทั้งหมดเพื่อใช้ในการแสดง
-        $categories = TBCategory::where('Main_id', $id)->orderBy('Sortorder', 'asc')->get();
+        $categories = TBCategory::findOrFail($id);
         // ส่งข้อมูลไปยัง View
         return view('categories.create', compact('categories'));
     }
 
     public function update(Request $request, $id)
     {
-        DB::beginTransaction();
         try {
-            TBCategory::where('Main_id', $id)->delete();
+            $categories = TBCategory::find($id);
+            $categories->Category_name = $request->Category_name;
+            $categories->Active = 1;
+            $categories->Update_by = Auth::user()->Username;
+            $categories->Update_date = now();
+            $categories->save();
 
-            // รับข้อมูลหมวดหมู่ที่ส่งมาจากฟอร์ม
-            $categories = $request->input('Category_name');
-
-            foreach ($categories as $key => $value) {
-                $category = new TBCategory();
-                $category->ID = $key;
-                $category->Category_name = $request->Category_name[$key];
-                $category->Level = $request->Level[$key];
-                $category->Active = 1;
-                $category->Main_id = $id;
-                $category->Parent_id = $request->Parent_id[$key];
-                $category->Sortorder = $request->Sortorder[$key];
-                $category->Create_by = Auth::user()->Username; // อาจจะใช้ auth()->user()->name แทน
-                $category->Create_date = now();
-
-                $category->save();
-            }
-
-
-            DB::commit();
             // ส่ง Response กลับไป
             return response()->json([
                 'success' => true,
                 'message' => 'แก้ไขข้อมูลสำเร็จ!',
             ]);
         } catch (\Exception $e) {
-            DB::rollBack(); 
             // ส่ง Error Response หากเกิดข้อผิดพลาด
             return response()->json(
                 [
@@ -154,8 +122,10 @@ class CategoryController extends Controller
         try {
             // ค้นหาข้อมูลหมวดหมู่
             $category = TBCategory::find($id);
-            // ลบหมวดหมู่
-            $category->delete();
+            $category->Active = 0;
+            $category->Update_by = Auth::user()->Username;
+            $category->Update_date = now();
+            $category->save();
 
             // ส่ง Response กลับไป
             return response()->json([

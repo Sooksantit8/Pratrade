@@ -16,8 +16,20 @@ class TBCategory extends Model
 
     // กำหนดคอลัมน์ที่สามารถเติมข้อมูลได้
     protected $fillable = [
-        'Category_name','Parent_id','Main_id','Level','Sortorder','Active', 'Create_by', 'Create_date', 'Update_by', 'Update_date'
+        'Category_name','Active','Create_by', 'Create_date', 'Update_by', 'Update_date'
     ];
+
+    // กำหนด UUID ก่อนสร้าง record
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->ID)) {
+                $model->ID = (string) Str::uuid();
+            }
+        });
+    }
 
     // ไม่ต้องใช้ timestamps (created_at, updated_at)
     public $timestamps = false;
