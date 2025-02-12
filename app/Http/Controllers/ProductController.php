@@ -34,6 +34,7 @@ class ProductController extends Controller
     {
         $package_history = TBUser_Package_History::with('package')
         ->where('Username', Auth::user()->Username)
+        ->where('Status', 'S02')
         ->where('Active', 1)
         ->orderBy('Create_date', 'desc')
         ->first();
@@ -75,6 +76,7 @@ class ProductController extends Controller
             $product->Bought_from = $request->Bought_from ?? null;
             $product->Purchase_price = $request->Purchase_price ?? null;
             $product->Active = 1;
+            $product->Create_by = Auth::user()->Username;
             $product->Create_date = now();
             $product->save();
 

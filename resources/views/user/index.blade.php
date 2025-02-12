@@ -155,7 +155,8 @@
                     },
                     {
                         data: 'package_name',
-                        name: 'package.Package_Name'
+                        name: 'package.Package_Name',
+                        orderable: false,
                     },
                     {
                         data: 'action',

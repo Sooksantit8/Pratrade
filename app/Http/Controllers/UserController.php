@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\TBBookbank;
+use Illuminate\Support\Facades\Storage;
 use DataTables;
 
 class UserController extends Controller
@@ -49,14 +50,21 @@ class UserController extends Controller
 
         return DataTables::of($query)
             ->addColumn('action', function ($row) {
+                $icon = "";
+                $href = "";
+                $onclick = "";
+                if($row->Create_by ==  Auth::user()->Username || $row->Username ==  Auth::user()->Username ){
+                    $icon = "ti ti-edit";
+                    $href = '/user/edit/' .$row->ID .'" class="text-dark edit" data-id="' .$row->ID .'"';
+                }else{
+                    $icon = "ti ti-eye";
+                    $href = 'javascript:void(0)';
+                    $onclick = 'detailuser(\''.$row->ID .'\')';
+                }
                 return '
             <div class="action-btn">
-                <a href="/user/edit/' .
-                    $row->ID .
-                    '" class="text-dark edit" data-id="' .
-                    $row->ID .
-                    '">
-                <i class="ti ti-edit fs-5"></i>
+                <a href="'.$href.'" class="text-dark ms-2" onclick="'.$onclick.'">
+                <i class="'.$icon.' fs-5"></i>
                 </a>
                 <a href="javascript:void(0)" class="text-dark delete ms-2" onclick="deletecategory(\'' .
                     $row->ID .
@@ -186,5 +194,62 @@ class UserController extends Controller
         $bookbank = TBBookbank::where('Active',1)->where("Used",1)->first();
         $package = TBPackage::where('Active',1)->where("id",$packageid)->first();
         return view('pricing.payment', compact("package","bookbank"));
+    }
+
+    public function Insertpurpayment(Request $request,$packageid)
+    {
+        DB::beginTransaction(); // เริ่มการทำธุรกรรม
+        try {
+            $package = TBPackage::with("lookupTypePost")->findOrFail( $packageid );
+            $currentDate = Carbon::now();
+
+            $DateStop = $currentDate;
+
+            if($package->lookupTypePost->Lookup_name2 == "D"){
+                $DateStop = $currentDate->addDays(1);
+            }else if($package->lookupTypePost->Lookup_name2 == "M"){
+                $DateStop = $currentDate->addMonths(1);
+            }else if($package->lookupTypePost->Lookup_name2 == "Y"){
+                $DateStop = $currentDate->addYears(1);
+            }
+
+            $user = TBUser::find( Auth::user()->Username);
+            $user->Package = $packageid;
+            $user->Status = 'S01';
+            $user->save();
+
+            $Package_History = new TBUser_Package_History();
+            $Package_History->Username = Auth::user()->Username;
+            $Package_History->Package = $packageid;
+            $Package_History->Date_Start = $currentDate;
+            $Package_History->Date_Stop = $DateStop;
+            $Package_History->Status = "S01";
+            $Package_History->Active = true;
+            $Package_History->Create_by = Auth::user()->Username;; // อาจจะใช้ auth()->user()->name แทน
+            $Package_History->Create_date = now();
+            $Package_History->save();
+
+            // หากมีไฟล์ใหม่ ให้ลบไฟล์เก่าและอัปเดตไฟล์ใหม่
+            if ($request->hasFile('Path_Image')) {
+                // บันทึกไฟล์ใหม่
+                $path = $request->file('Path_Image')->store('Slippayment', 'public');
+                $Package_History->Path_Image = $path;
+            }
+            DB::commit(); // ถ้าทุกอย่างทำสำเร็จ ก็ commit ข้อมูลทั้งหมด
+            // ส่ง Response กลับไป
+            return response()->json([
+                'success' => true,
+                'message' => 'บันทึกข้อมูลสำเร็จ!',
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack(); 
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $th->getMessage(),
+                ],
+                500,
+            );
+        }
     }
 }

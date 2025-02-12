@@ -110,6 +110,10 @@
         .level-4 td:first-child {
             padding-left: 290px; /* เยื้อง 60px สำหรับ Lv3 */
         }
+        .disabled{
+            color: #d0d0d0 !important;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
