@@ -13,7 +13,7 @@
                     </a>
                 </div>
                 <div class="card-body pt-3 p-4">
-                    <h6 class="fs-4" style="height: 40px">{{ \Illuminate\Support\Str::limit($product->Product_name, 50, '...') }}</h6>
+                    <h6 class="fs-4" style="height: 40px">{{ \Illuminate\Support\Str::limit($product->Product_Name, 50, '...') }}</h6>
                     <div class="d-flex align-items-center justify-content-between">
                         <h6 class="fs-4 mb-0">฿{{ number_format($product->Price) }} <span class="ms-2 fw-normal text-muted fs-3">
                             </span>

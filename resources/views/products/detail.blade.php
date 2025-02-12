@@ -42,7 +42,7 @@
                                 <span class="badge text-bg-success fs-2 fw-semibold">In Stock</span>
                                 <span class="fs-2">books</span>
                             </div>
-                            <h4 class="mb-3">{{$product->Product_name}}</h4>
+                            <h4 class="mb-3">{{$product->Product_Name}}</h4>
                             <p class="mb-3">หมวดหมู่สินค้า​: {{ $category_names }}</p>
                             <h4>
                                 

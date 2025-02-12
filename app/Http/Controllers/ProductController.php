@@ -66,7 +66,14 @@ class ProductController extends Controller
             $product->Stock_qty = $request->Stock_qty;
             $product->Preorder = $request->Preorder;
             $product->Preorder_date = $request->Preorder_date ?? null;
+            $product->Price_Preorder = $request->Price_Preorder ?? null;
             $product->Description = $request->Description;
+            $product->Product_model = $request->Product_model ?? null;
+            $product->Product_materials = $request->Product_materials ?? null;
+            $product->Manufacturer = $request->Manufacturer ?? null;
+            $product->Year_manufacture = $request->Year_manufacture ?? null;
+            $product->Bought_from = $request->Bought_from ?? null;
+            $product->Purchase_price = $request->Purchase_price ?? null;
             $product->Active = 1;
             $product->Create_date = now();
             $product->save();

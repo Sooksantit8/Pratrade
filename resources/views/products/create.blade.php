@@ -20,26 +20,70 @@
             <div class="col-lg-12 ">
                 <div class="card">
                     <div class="card-body">
-                        <div class="mb-4 form-group">
-                            <label class="form-label">ชื่อสินค้า<span class="text-danger">*</span>
-                            </label>
-                            <div class="controls">
-                                <input type="text" name="text" class="form-control" required name="Product_name"
-                                    aria-autocomplete="none" id="Product_name" maxlength="100">
+                        <div class="row">
+                            <div class="mb-3 form-group">
+                                <label class="form-label">ชื่อสินค้า<span class="text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    <input type="text" class="form-control" required name="Product_name"
+                                        aria-autocomplete="none" id="Product_name" maxlength="100">
+                                </div>
                             </div>
-                            <p class="fs-2">ต้องระบุชื่อผลิตภัณฑ์และแนะนำให้ไม่ซ้ำกัน</p>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-group">
+                                    <label class="form-label">รุ่นสินค้า
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" class="form-control"
+                                            name="Product_model" aria-autocomplete="none" id="Product_model" maxlength="45">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-group">
+                                    <label class="form-label">เนื้อ
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" class="form-control"
+                                            name="Product_materials" aria-autocomplete="none" id="Product_materials" maxlength="45">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-group">
+                                    <label class="form-label">ผู้สร้าง
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text"  class="form-control"
+                                            name="Manufacturer" aria-autocomplete="none" id="Manufacturer" maxlength="100">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-group">
+                                    <label class="form-label">ปีที่สร้าง
+                                    </label>
+                                    <div class="controls">
+                                        <input type="number" class="form-control"
+                                            name="Year_manufacture" aria-autocomplete="none" id="Year_manufacture" maxlength="4">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-4 form-group Category">
-                            <label class="form-label">หมวดหมู่สินค้า</label><span class="text-danger">*</span>
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <label class="form-label">หมวดหมู่สินค้า</label><span class="text-danger">*</span>
+                        <div class="mb-3 Category">
+
                             <select class="select2 form-control" multiple="multiple" id="Category" name="Category"
                                 required>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->ID }}">{{ $category->Category_name }}</option>
                                 @endforeach
                             </select>
-                            <p class="fs-2 mb-0">
-                                เพิ่มหมวดหมู่สินค้า
-                            </p>
                         </div>
                         <div class="mb-7 form-group">
                             <label class="form-label">ราคาสินค้า <span class="text-danger">*</span>
@@ -47,7 +91,6 @@
                             <div class="controls">
                                 <input type="number" class="form-control" required name="Price" aria-autocomplete="none">
                             </div>
-                            <p class="fs-2">กำหนดราคาสินค้า</p>
                         </div>
                         <div class="mb-7 form-group">
                             <label class="form-label">จำนวนสินค้า <span class="text-danger">*</span>
@@ -56,7 +99,6 @@
                                 <input type="number" class="form-control" required name="Stock_qty"
                                     aria-autocomplete="none">
                             </div>
-                            <p class="fs-2">กำหนดจำนวนสินค้า</p>
                         </div>
                         <div class="mb-7">
                             <label class="form-label">สถานะสินค้า</label><span class="text-danger">*</span>
@@ -89,7 +131,35 @@
                                                 id="Preorder_date" required aria-autocomplete="none">
                                         </div>
                                     </div>
+                                    <div class="mb-7 form-group">
+                                        <label class="form-label">ราคาสั่งจอง <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="controls">
+                                            <input type="number" class="form-control" id="Price_Preorder"
+                                                name="Price_Preorder" aria-autocomplete="none">
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 form-group">
+                            <label class="form-label">ซื้อมาจาก
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="form-control" name="Bought_from"
+                                    aria-autocomplete="none" id="Bought_from" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="mb-7 form-group">
+                            <label class="form-label">ราคาที่ซื้อมา
+                            </label>
+                            <div class="controls">
+                                <input type="number" class="form-control" name="Purchase_price" id="Purchase_price"
+                                    aria-autocomplete="none">
                             </div>
                         </div>
                     </div>
@@ -187,9 +257,13 @@
         function enable_disable_required(el) {
             if ($(el).val() == "PRE2") {
                 $("#Preorder_date").attr('required', 'required');
+                $("#Price_Preorder").attr('required', 'required');
             } else {
                 $("#Preorder_date").removeAttr('required');
                 $("#Preorder_date").val("");
+
+                ("#Price_Preorder").removeAttr('required');
+                $("#Price_Preorder").val("");
             }
         }
 
@@ -226,6 +300,12 @@
                     formData.append("Stock_qty", $("input[name='Stock_qty']").val());
                     formData.append("Preorder", $("input[name='Preorder']:checked").val());
                     formData.append("Preorder_date", $("#Preorder_date").val());
+                    formData.append("Product_model", $("#Product_model").val());
+                    formData.append("Product_materials", $("#Product_materials").val());
+                    formData.append("Manufacturer", $("#Manufacturer").val());
+                    formData.append("Year_manufacture", $("#Year_manufacture").val());
+                    formData.append("Bought_from", $("#Bought_from").val());
+                    formData.append("Purchase_price", $("#Purchase_price").val());
                     formData.append("Description", quill.root.innerHTML); // ข้อมูลจาก Quill Editor
 
                     // ส่งข้อมูลไฟล์ที่อัปโหลดจาก Dropzone

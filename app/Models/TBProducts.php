@@ -15,9 +15,16 @@ class TBProducts extends Model
     // กำหนดคอลัมน์ที่สามารถกรอกข้อมูลได้
     protected $fillable = [
         'Product_name',
+        'Product_model',
+        'Product_materials',
+        'Manufacturer',
+        'Year_manufacture',
+        'Bought_from',
+        'Purchase_price',
         'Description',
         'Category',
         'Price',
+        'Price_Preorder',
         'Preorder',
         'Preorder_date',
         'Active',
