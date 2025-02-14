@@ -131,9 +131,66 @@ class UserController extends Controller
         }
     }
 
-    public function edit($id) {}
+    public function edit($id)
+    {
+        // ดึงข้อมูลหมวดหมู่ทั้งหมดเพื่อใช้ในการแสดง
+        $user = TBUser::where('id',$id)->first();
+        // ส่งข้อมูลไปยัง View
+        $Permissions = TBPermission::where('Active', true)->get();
+        $Packages = TBPackage::where('Active', true)->get();
+        // ส่งข้อมูลไปยัง View
+        return view('user.create', compact("Permissions", "Packages",'user'));
+    }
 
-    public function update(Request $request, $id) {}
+    public function detail($id)
+    {
+        // ดึงข้อมูลหมวดหมู่ทั้งหมดเพื่อใช้ในการแสดง
+        $user = TBUser::where('id',$id)->first();
+        $package = TBPackage::where('Active', true)->where('ID',$user->Package)->first();
+        $packagehis = TBUser_Package_History::where('Active',1)
+        ->where('Package',$package->ID)
+        ->orderByDesc('Create_date')
+        ->first();
+
+        // ส่งข้อมูลไปยัง View
+        return view('user.detail', compact("package",'user','packagehis'));
+    }
+
+    public function update(Request $request, $id) {
+        try {
+            // สร้าง User ใหม่
+            $user = TBUser::where('id',$id)->first();
+            $user->Username = $request->Username;
+            if($request->Password != ""){
+                $user->Password = bcrypt($request->Password); // เข้ารหัสรหัสผ่าน
+            }
+            $user->Firstname = $request->Firstname;
+            $user->Lastname = $request->Lastname;
+            $user->Tel = $request->Tel;
+            $user->Email = $request->Email;
+            $user->Permission_Code = $request->Permission_Code;
+            $user->Package = $request->Package;
+            $user->Is_Reject = false;
+            if ($request->Permission_Code == "P01") {
+                $user->Status = "S02";
+            }
+            $user->Active = true;
+            $user->Update_by = Auth::user()->Username ?? 'System'; // กำหนดผู้สร้าง
+            $user->Update_date = now();
+
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'แก้ไขข้อมูล User สำเร็จ'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function paymentPackage($packageid)
     {
@@ -227,14 +284,15 @@ class UserController extends Controller
             $Package_History->Active = true;
             $Package_History->Create_by = Auth::user()->Username;; // อาจจะใช้ auth()->user()->name แทน
             $Package_History->Create_date = now();
-            $Package_History->save();
 
             // หากมีไฟล์ใหม่ ให้ลบไฟล์เก่าและอัปเดตไฟล์ใหม่
             if ($request->hasFile('Path_Image')) {
                 // บันทึกไฟล์ใหม่
                 $path = $request->file('Path_Image')->store('Slippayment', 'public');
-                $Package_History->Path_Image = $path;
+                $Package_History->Payslip = $path;
             }
+
+            $Package_History->save();
             DB::commit(); // ถ้าทุกอย่างทำสำเร็จ ก็ commit ข้อมูลทั้งหมด
             // ส่ง Response กลับไป
             return response()->json([

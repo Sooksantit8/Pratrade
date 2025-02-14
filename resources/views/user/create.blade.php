@@ -34,27 +34,40 @@
                             </label>
                             <div class="controls">
                                 <input type="text" class="form-control" required name="Username" aria-autocomplete="none"
-                                    id="Username" maxlength="45">
+                                    id="Username" value="{{$user->Username ?? ''}}" maxlength="45">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-4 form-group">
-                            <label class="form-label">Password<span class="text-danger">*</span>
-                            </label>
-                            <div class="controls">
-                                <input type="password" class="form-control" required name="Password"
-                                    aria-autocomplete="none" id="Password" maxlength="45">
+                    @if ($id != "")
+                        <div class="col-md-6">
+                            <div class="mb-4 form-group">
+                                <label class="form-label">Password
+                                </label>
+                                <div class="controls">
+                                    <input type="password" class="form-control" name="Password"
+                                        aria-autocomplete="none" id="Password" maxlength="45">
+                                </div>
+                            </div>
+                        </div>          
+                    @else
+                        <div class="col-md-6">
+                            <div class="mb-4 form-group">
+                                <label class="form-label">Password<span class="text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    <input type="password" class="form-control" required name="Password"
+                                        aria-autocomplete="none" id="Password" maxlength="45">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                     <div class="col-md-6">
                         <div class="mb-4 form-group">
                             <label class="form-label">ชื่อ<span class="text-danger">*</span>
                             </label>
                             <div class="controls">
                                 <input type="text" class="form-control" required name="Firstname"
-                                    aria-autocomplete="none" id="Firstname" maxlength="45">
+                                    aria-autocomplete="none" id="Firstname" value="{{$user->Firstname ?? ''}}" maxlength="45">
                             </div>
                         </div>
                     </div>
@@ -64,7 +77,7 @@
                             </label>
                             <div class="controls">
                                 <input type="text" class="form-control" required name="Lastname" aria-autocomplete="none"
-                                    id="Lastname" maxlength="45">
+                                    id="Lastname" value="{{$user->Lastname ?? ''}}" maxlength="45">
                             </div>
                         </div>
                     </div>
@@ -75,7 +88,7 @@
                             </label>
                             <div class="controls">
                                 <input type="text" class="form-control xphone-inputmask" required name="Tel"
-                                    aria-autocomplete="none" id="Tel" maxlength="10">
+                                    aria-autocomplete="none" value="{{$user->Tel ?? ''}}" id="Tel" maxlength="10">
                             </div>
                         </div>
                     </div>
@@ -85,7 +98,7 @@
                             </label>
                             <div class="controls">
                                 <input type="text" class="form-control email-inputmask" name="Email"
-                                    aria-autocomplete="none" id="Email" maxlength="45">
+                                    aria-autocomplete="none" id="Email" value="{{$user->Email ?? ''}}" maxlength="45">
                             </div>
                         </div>
                     </div>
@@ -101,7 +114,7 @@
                                     id="customControlValidation2" id="nav-tab-{{ $permission->Permission_Code }}"
                                     data-bs-toggle="tab" data-bs-target="#nav-{{ $permission->Permission_Code }}"
                                     aria-controls="nav-{{ $permission->Permission_Code }}">
-                                    <input type="radio" class="form-check-input" name="Permission"
+                                    <input type="radio" class="form-check-input" name="Permission_Code"
                                         id="{{ $permission->Permission_Code }}" value="{{ $permission->Permission_Code }}"
                                         @if ($permission->Permission_Code == ($user->Permission_Code ?? 'P01')) checked @endif
                                         onclick = "enable_disable_required(this,'{{ $permission->Required_Package }}')">
@@ -173,7 +186,7 @@
                                 text: response.message,
                                 showConfirmButton: true
                             }).then(() => {
-                                window.location.href = "{{ route('package.index') }}";
+                                window.location.href = "{{ route('user.index') }}";
                             });
                         } else {
                             Swal.fire({

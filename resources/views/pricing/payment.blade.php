@@ -111,7 +111,7 @@
                             text: response.message,
                             showConfirmButton: true
                         }).then(() => {
-                            window.location.href = "{{ route('product.pricing) }}";
+                            window.location.href = "{{ route('product.pricing') }}";
                         });
                     } else {
                         Swal.fire({
