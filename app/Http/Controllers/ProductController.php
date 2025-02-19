@@ -44,7 +44,7 @@ class ProductController extends Controller
         ->count();
 
 
-        if((Auth::user()->Status == 'S01' || Auth::user()->Package == '' || Auth::user()->Package == null || ($package_history->package->Qty_Post - $CountPost) <= 0) && Auth::user()->Permission_Code != 'P01'){
+        if((Auth::user()->Status != 'S02' || Auth::user()->Package == '' || Auth::user()->Package == null || ($package_history->package->Qty_Post - $CountPost) <= 0) && Auth::user()->Permission_Code != 'P01'){
             return redirect()->route('product.pricing');
         }
         // Query ข้อมูลจากฐานข้อมูล

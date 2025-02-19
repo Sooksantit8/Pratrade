@@ -310,4 +310,59 @@ class UserController extends Controller
             );
         }
     }
+
+    public function Approve(Request $request,$userid)
+    {
+        DB::beginTransaction(); // เริ่มการทำธุรกรรม
+        try {
+            $user = TBUser::where('id',$userid)->first();
+            $user->Status = $request->status;
+
+            $package = TBPackage::with("lookupTypePost")->findOrFail( $user->Package);
+            $currentDate = Carbon::now();
+
+            $DateStop = $currentDate;
+
+            if($package->lookupTypePost->Lookup_name2 == "D"){
+                $DateStop = $currentDate->addDays(1);
+            }else if($package->lookupTypePost->Lookup_name2 == "M"){
+                $DateStop = $currentDate->addMonths(1);
+            }else if($package->lookupTypePost->Lookup_name2 == "Y"){
+                $DateStop = $currentDate->addYears(1);
+            }
+            
+
+            $Package_History = TBUser_Package_History::where('Package',$user->Package)
+            ->where('Username',$user->Username)
+            ->where('Active',1)
+            ->where('Status','S01')->first();
+
+            $Package_History->Status = $request->status;
+            $Package_History->Date_Start = now();
+            $Package_History->Date_Stop = $DateStop;
+            
+
+            if($request->status == "S03"){
+                $Package_History->Commentreject = $request->Commentreject;
+            }
+            
+            $user->save();
+            $Package_History->save();
+            DB::commit(); // ถ้าทุกอย่างทำสำเร็จ ก็ commit ข้อมูลทั้งหมด
+            // ส่ง Response กลับไป
+            return response()->json([
+                'success' => true,
+                'message' => 'บันทึกข้อมูลสำเร็จ!',
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack(); 
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $th->getMessage(),
+                ],
+                500,
+            );
+        }
+    }
 }

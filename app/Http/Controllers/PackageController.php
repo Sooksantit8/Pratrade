@@ -30,8 +30,12 @@ class PackageController extends Controller
                 $query->where('Price', 0); // เงื่อนไขที่ต้องการใน package
             })->get();
 
+        $nowpackage = $package_history = TBUser_Package_History::orderBy("Create_date","desc")
+        ->where('Active',1)
+        ->first();
+
         // ส่งข้อมูลไปยัง view
-        return view('pricing.index', compact('package', 'package_history'));
+        return view('pricing.index', compact('package', 'package_history','nowpackage'));
     }
 
     // ดึงข้อมูล Package สำหรับ DataTable

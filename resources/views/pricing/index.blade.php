@@ -8,7 +8,7 @@
 @else
     @if (Auth::user()->Status == 'S03')
         <div class="alert alert-danger text-danger" role="alert">
-            กรุณารออนุมัติจาก Admin สักครู่ เนื่องจาก
+            Admin ไม่อนุมัติ เนื่องจาก {{$nowpackage->Commentreject}}
         </div>
     @endif
     <div class="">

@@ -66,4 +66,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/purpayment/{packageid}', [UserController::class, 'purpayment'])->name('user.purpayment');
     Route::post('/user/Insertpurpayment/{id}', [UserController::class, 'Insertpurpayment'])->name('user.Insertpurpayment');
     Route::get('/user/detail/{packageid}', [UserController::class, 'detail'])->name('user.detail');
+    Route::post('/user/Approve/{userid}', [UserController::class, 'Approve'])->name('user.Approve');
 });

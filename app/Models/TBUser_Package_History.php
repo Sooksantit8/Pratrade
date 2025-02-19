@@ -37,7 +37,7 @@ class TBUser_Package_History extends Model
         'Status',
         'Active',
         'Is_Reject',
-        'Coment',
+        'Commentreject',
         'Create_by',
         'Create_date',
         'Update_by',
