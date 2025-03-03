@@ -60,8 +60,9 @@
                                     </button>
                                     <input type="text"
                                         class="min-width-40 flex-grow-0 border border-muted text-muted fs-4 fw-semibold form-control text-center qty"
-                                        placeholder="" aria-label="Example text with button addon"
-                                        aria-describedby="add1" value="1">
+                                        placeholder="" aria-label="Example text with button addon" id="Stock_qty"
+                                        onchange="checkQty('{{$product->Stock_qty}}',this)"
+                                        aria-describedby="add1" value="1" max="{{$product->Stock_qty}}">
                                     <button
                                         class="btn min-width-40 py-0 border border-muted fs-5 border-start-0 text-muted add"
                                         type="button" id="addo2">
@@ -71,7 +72,7 @@
                             </div>
                             <div class="d-sm-flex align-items-center gap-6 pt-8 mb-7">
                                 <a href="javascript:void(0)" class="btn d-block btn-primary px-5 py-8 mb-6 mb-sm-0">ซื้อสินค้า</a>
-                                <a href="javascript:void(0)" class="btn d-block btn-danger px-7 py-8">เพิ่มไปยังรถเข็น</a>
+                                <a href="javascript:void(0)" class="btn d-block btn-danger px-7 py-8" onclick="addtocart('{{$product->ID}}')">เพิ่มไปยังรถเข็น</a>
                             </div>
                             <p class="mb-0">Dispatched in 2-3 weeks</p>
                             <a href="javascript:void(0)">Why the longer time for delivery?</a>
@@ -100,7 +101,7 @@
                 </div>
             </div>
         </div>
-        <div class="related-products pt-7">
+        {{-- <div class="related-products pt-7">
             <h4 class="mb-3 fw-semibold">Related Products</h4>
             <div class="row">
                 <div class="col-sm-6 col-xl-3">
@@ -284,6 +285,53 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
+@push('scripts')
+<script>
+    function checkQty(maxqty,el){
+        var value = parseInt($(el).val());
+        var max = parseInt(maxqty);
+        if(value > max){
+            toastr.warning("ขออภัยคุณสามารถซื้อสินค้าได้เพียง "+maxqty+" ชิ้น");
+            $(el).val(max)
+        }
+    }
+    function addtocart(id){
+        $.ajax({
+            url: "/product/addcart/"+id, // ใช้ route เพื่อใส่ค่า id ใน URL
+            method: "POST",
+            data : {
+                Qty : $("#Stock_qty").val()
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        text: response.message,
+                        showConfirmButton: true
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ผิดพลาด!',
+                        text: response.message,
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด!',
+                    text: xhr.responseJSON.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
+                });
+            }
+        });
+    }
+</script>
+@endpush

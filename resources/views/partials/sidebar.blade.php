@@ -20,7 +20,7 @@
                         <span>
                             <i class="ti ti-aperture"></i>
                         </span>
-                        <span class="hide-menu">Feed</span>
+                        <span class="hide-menu">รายการพระเครื่อง</span>
                     </a>
                 </li>
 
@@ -30,6 +30,46 @@
                             <i class="ti ti-message-2-share"></i>
                         </span>
                         <span class="hide-menu">ลงประกาศ</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-history"></i>
+                        </span>
+                        <span class="hide-menu">ประวัติการเช่าพระ</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-category"></i>
+                        </span>
+                        <span class="hide-menu">รายการที่ลงประกาศ</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('bookbank.bookbanuser') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-book-2"></i>
+                        </span>
+                        <span class="hide-menu">หมายเลขบัญชีรับเงิน</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-list"></i>
+                        </span>
+                        <span class="hide-menu">รายการผู้เช่าพระ</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-phone"></i>
+                        </span>
+                        <span class="hide-menu">ติดต่อเรา</span>
                     </a>
                 </li>
                 @if(Auth::check() && Auth::user()->Permission_Code == 'P01')

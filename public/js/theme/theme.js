@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     quantityButtons.forEach(function (button) {
       button.addEventListener("click", function () {
         var qtyInput = this.closest("div").querySelector(".qty");
+        var maxqty = $(qtyInput).attr("max");
         var currentVal = parseInt(qtyInput.value);
         var isAdd = this.classList.contains("add");
 
@@ -45,6 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
             ? --currentVal
             : currentVal;
         }
+
+        checkQty(maxqty,qtyInput)
       });
     });
   }

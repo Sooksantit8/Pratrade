@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class TBBookbank extends Model
+class TBCart_Product extends Model
 {
-    protected $table = 'TBBookbank';
+    protected $table = 'TBCart_Product';
     public $timestamps = false; // ถ้าใช้ custom column สำหรับ Create_date และ Update_date
 
     protected $primaryKey = 'ID';
@@ -16,13 +16,10 @@ class TBBookbank extends Model
 
     protected $fillable = [
         'ID',
-        'Bookbanknumber',
-        'Bankname',
-        'Bookbankname',
-        'Path_Image',
-        'From',
-        'Used',
-        'Active',
+        'Username',
+        'Product_ID',
+        'Shop_ID',
+        'Qty',
         'Create_by',
         'Create_date',
         'Update_by',
@@ -41,8 +38,13 @@ class TBBookbank extends Model
         });
     }
 
-    public function Createby()
+    public function product()
     {
-        return $this->belongsTo(TBUser::class, 'Create_by', 'Username');
+        return $this->belongsTo(TBProducts::class, 'Product_ID', 'ID');
+    }
+
+    public function Shop()
+    {
+        return $this->belongsTo(TBUser::class, 'Shop_ID', 'Username');
     }
 }

@@ -5,7 +5,7 @@
     <div class="card-body px-4 py-3">
         <div class="row align-items-center">
             <div class="col-9">
-                <h4 class="fw-semibold mb-8">หมายเลขบัญชีกลาง</h4>
+                <h4 class="fw-semibold mb-8">หมายเลขบัญชีรับเงิน</h4>
             </div>
             <div class="col-3">
                 <div class="text-center mb-n5">
@@ -19,8 +19,8 @@
 
 <div class="datatables">
     <div class="action-btn layout-top-spacing mb-3 d-flex align-items-center justify-content-end flex-wrap gap-6">
-        <a href="{{ route('bookbank.create') }}" class="btn waves-effect waves-light btn-primary mb-2">
-            เพิ่มหมายเลขบัญชีกลาง
+        <a href="{{ route('bookbank.createbookbankuser') }}" class="btn waves-effect waves-light btn-primary mb-2">
+            เพิ่มหมายเลขบัญชีรับเงิน
         </a>
     </div>
     <div class="card card-body">
@@ -28,14 +28,14 @@
             <div class="col-md-3 col-xl-3">
                 <form class="position-relative">
                     <input type="text" class="form-control product-search ps-5 mb-1 mt-1" id="input-search-Bookbanknumber"
-                        name="search_Bookbanknumber" placeholder="ค้นหาหมายเลขบัญชีกลาง">
+                        name="search_Bookbanknumber" placeholder="ค้นหาหมายเลขบัญชีรับเงิน">
                     <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y fs-6 text-dark ms-3"></i>
                 </form>
             </div>
             <div class="col-md-3 col-xl-3">
                 <form class="position-relative">
                     <input type="text" class="form-control product-search ps-5 mb-1 mt-1" id="input-search-Bookbankname"
-                        name="search_Bookbankname" placeholder="ค้นหาหมายชื่อบัญชีกลาง">
+                        name="search_Bookbankname" placeholder="ค้นหาหมายชื่อบัญชีรับเงิน">
                     <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y fs-6 text-dark ms-3"></i>
                 </form>
             </div>
@@ -75,7 +75,7 @@
                 serverSide: true,
                 searching: false,
                 ajax: {
-                    url: "{{ route('bookbank.data') }}",
+                    url: "{{ route('bookbank.datauser') }}",
                     data: function (d) {
                         // ส่งค่า input filters ไปที่ server
                         d.search_bookbankname = $('#input-search-Bookbankname').val();
@@ -120,57 +120,6 @@
             });
         });
 
-        function deletebookbank(id) {
-            Swal.fire({
-                title: "คุณแน่ใจหรือไม่?",
-                text: "คุณจะไม่สามารถย้อนกลับสิ่งนี้ได้!",
-                type: "warning",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก",
-                closeOnConfirm: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    // ส่งคำขอลบผ่าน Ajax
-                    $.ajax({
-                        url: '/bookbank/destroy/' + id, // แก้ไขเป็น /categories/{id}
-                        type: 'POST',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'สำเร็จ!',
-                                    text: response.message,
-                                    showConfirmButton: true
-                                }).then(() => {
-                                    window.location.href = "{{ route('bookbank.index') }}";
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'ผิดพลาด!',
-                                    text: response.message,
-                                });
-                            }
-                        },
-                        error: function(xhr) {
-                            toastr.error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", {
-                                positionClass: "toastr toast-top-right",
-                                containerId: "toast-top-right",
-                            });
-                        }
-                    });
-                }
-            });
-        }
-
         $(document).on('change', '.form-check-input', function () {
             // ยกเลิก Checked ของ Checkbox อื่นทั้งหมด
             $('.form-check-input').not(this).prop('checked', false);
@@ -190,7 +139,7 @@
                 data: {
                     id: rowId,
                     used: isChecked ? 1 : 0,
-                    From : 'admin'
+                    From : 'user'
                 },
                 success: function (response) {
                     console.log('Updated successfully:', response);

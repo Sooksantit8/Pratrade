@@ -195,6 +195,28 @@
         @if (session('warning'))
             toastr.warning("{{ session('warning') }}");
         @endif
+
+        $("#Showcart").click(function(){
+            Showcart()
+        });
+
+        function Showcart(){
+            $.ajax({
+                url: "/product/Showcart", // ใช้ route เพื่อใส่ค่า id ใน URL
+                method: "GET",
+                success: function(response) {
+                    $("#cartcontent").html(response);
+                    $("#offcanvasRight").offcanvas("show")
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด!',
+                        text: xhr.responseJSON.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
+                    });
+                }
+            });
+        }
     </script>
     @stack('scripts')
 </body>

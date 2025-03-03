@@ -18,7 +18,6 @@ Route::get('/auth/facebook/callback', [FacebookAuthController::class, 'handleFac
 
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/product/tableproduct', [ProductController::class, 'table_product']);
-Route::get('/product/detail/{id}', [ProductController::class, 'detail'])->name('product.detail');
 
 // เส้นทางที่ต้องล็อกอิน
 Route::middleware(['auth'])->group(function () {
@@ -27,6 +26,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::get('/product/create/pricing', [PackageController::class, 'pricing'])->name('product.pricing');
     Route::post('/product/insertProduct', [ProductController::class, 'insertProduct']);
+    Route::get('/product/detail/{id}', [ProductController::class, 'detail'])->name('product.detail');
+    Route::post('/product/addcart/{id}', [ProductController::class, 'addCart'])->name('product.addCart');
+    Route::get('/product/Showcart', [ProductController::class, 'Showcart'])->name('product.Showcart');
+
+    Route::get('/bookbanuser', [BookbankController::class, 'bookbanuser'])->name('bookbank.bookbanuser');
+    Route::get('/bookbank/datauser', [BookbankController::class, 'getbookbankuser'])->name('bookbank.datauser');
+    Route::get('/bookbanuser/create', [BookbankController::class, 'createbookbankuser'])->name('bookbank.createbookbankuser');
 
     Route::middleware('permission:P01')->group(function () {
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

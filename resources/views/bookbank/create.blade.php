@@ -52,6 +52,8 @@
                         value="{{ $bookbank->Bankname ?? '' }}" aria-autocomplete="none" maxlength="45">
                 </div>
             </div>
+            <input type="hidden" class="form-control" required name="From" id="From"
+                value="{{ $bookbank->From ?? $From }}" aria-autocomplete="none" readonly maxlength="45">
             <div class="mb-7 form-group">
                 <label class="form-label">QR CODE <span class="text-danger">*</span>
                 </label>
@@ -111,7 +113,11 @@
                                 text: response.message,
                                 showConfirmButton: false
                             }).then(() => {
-                                window.location.href = "{{ route('bookbank.index') }}";
+                                if($("#From").val() == 'admin'){
+                                    window.location.href = "{{ route('bookbank.index') }}";
+                                }else{
+                                    window.location.href = "{{ route('bookbank.bookbanuser') }}";
+                                }
                             });
                         } else {
                             Swal.fire({

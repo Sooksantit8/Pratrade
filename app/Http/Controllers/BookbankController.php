@@ -16,10 +16,16 @@ class BookbankController extends Controller
         return view('bookbank.index');
     }
 
+    public function bookbanuser()
+    {
+        return view('bookbankuser.index');
+    }
+
     public function getbookbank(Request $request)
     {
         if ($request->ajax()) {
-            $query = TBBookbank::where('Active', 1);
+            $query = TBBookbank::where('Active', 1)
+            ->where('From','admin');
 
             if ($request->has('search_booknumber')) {
                 $query->where('Bookbanknumber', 'like', "%$request->search_booknumber%");
@@ -64,10 +70,68 @@ class BookbankController extends Controller
         }
     }
 
+    public function getbookbankuser(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = TBBookbank::where('Active', 1)
+            ->where('Create_by',Auth::user()->Username)
+            ->where('From','user');
+
+            if ($request->has('search_booknumber')) {
+                $query->where('Bookbanknumber', 'like', "%$request->search_booknumber%");
+            }
+
+            if ($request->has('search_bookbankname')) {
+                $query->where('Bookbankname', 'like', "%$request->search_bookbankname%");
+            }
+
+            return DataTables::of($query)
+                ->addColumn('action', function ($row) {
+                    return '
+                    <div class="action-btn">
+                        <a href="/bookbank/edit/' .
+                        $row->ID .
+                        '" class="text-dark edit" ata-id="' .
+                        $row->ID .
+                        '">
+                        <i class="ti ti-edit fs-5"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="text-dark delete ms-2" onclick="deletebookbank(\'' .
+                        $row->ID .
+                        '\')">
+                        <i class="ti ti-trash fs-5"></i>
+                        </a>
+                    </div>
+                ';
+                })
+                ->addColumn('Used', function ($row) {
+                    if ($row->Used == 1) {
+                        return '<div class="form-check form-switch py-2">
+                                    <input class="form-check-input" type="checkbox" checked data-id="' . $row->ID . '">
+                                </div>';
+                    } else {
+                        return '<div class="form-check form-switch py-2">
+                                    <input class="form-check-input" type="checkbox" data-id="' . $row->ID . '">
+                                </div>';
+                    }
+                })
+                ->rawColumns(['action', 'Used'])
+                ->make(true);
+        }
+    }
+
+    public function createbookbankuser()
+    {
+        $From = 'user';
+        // ส่งข้อมูลไปยัง View
+        return view('bookbank.create',compact('From'));
+    }
+
     public function create()
     {
+        $From = 'admin';
         // ส่งข้อมูลไปยัง View
-        return view('bookbank.create');
+        return view('bookbank.create',compact('From'));
     }
 
     public function insertBookbank(Request $request)
@@ -78,6 +142,7 @@ class BookbankController extends Controller
             $bookbank->Bookbankname = $request->Bookbankname;
             $bookbank->Bankname = $request->Bankname;
             $bookbank->Active = 1;
+            $bookbank->From = $request->From;
             $bookbank->Create_by = Auth::user()->Username;
             $bookbank->Create_date = now();
 
@@ -181,8 +246,17 @@ class BookbankController extends Controller
     public function Changestatusused(Request $request)
     {
         try {
-            TBBookbank::where('Active', 1)
-            ->update(['Used' => 0, 'Update_date' => now(),'Update_by'=>Auth::user()->Username]);
+            if($request->From == "admin"){
+                TBBookbank::where('Active', 1)
+                ->where('From','admin')
+                ->update(['Used' => 0, 'Update_date' => now(),'Update_by'=>Auth::user()->Username]);
+            }else{
+                TBBookbank::where('Active', 1)
+                ->where('From','user')
+                ->where('Create_by',Auth::user()->Username)
+                ->update(['Used' => 0, 'Update_date' => now(),'Update_by'=>Auth::user()->Username]);
+            }
+
 
             $bookbank = TBBookbank::find($request->id); // ค้นหา record ตาม ID
             if ($bookbank) {

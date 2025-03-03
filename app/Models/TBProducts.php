@@ -24,6 +24,7 @@ class TBProducts extends Model
         'Description',
         'Category',
         'Price',
+        'Stock_qty',
         'Price_Preorder',
         'Preorder',
         'Preorder_date',
@@ -54,5 +55,10 @@ class TBProducts extends Model
     public function images()
     {
         return $this->hasMany(TBImage_Product::class, 'ProductID', 'ID');
+    }
+
+    public function categorys()
+    {
+        return $this->hasMany(TBProduct_Category::class, 'Product_ID', 'ID');
     }
 }

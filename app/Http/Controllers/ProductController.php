@@ -6,6 +6,7 @@ use App\Models\TBLookup;
 use App\Models\TBImage_Product;
 use App\Models\TBCategory;
 use App\Models\TBProduct_Category;
+use App\Models\TBCart_Product;
 use App\Models\TBUser_Package_History;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
@@ -136,6 +137,63 @@ class ProductController extends Controller
         $category_names = $product_category->pluck('category.Category_name')->implode(', ');
         return view('products.detail', compact('product', 'category_names'));
     }
+
+    public function addCart($id,Request $request)
+    {
+        try {
+            $cartProduct = TBCart_Product::where('Username',Auth::user()->Username)
+            ->where('Product_ID',$id)->first();
+
+            if ($cartProduct) {
+                $cartProduct->delete();  // ลบข้อมูล
+            }
+            $product = TBProducts::with('images')->findOrFail($id);
+            $addcart = new TBCart_Product();
+            $addcart->Username = Auth::user()->Username;
+            $addcart->Product_ID = $id;
+            $addcart->Qty = $request->Qty;
+            $addcart->Shop_ID = $product->Create_by;
+            $addcart->Create_by = Auth::user()->Username;
+            $addcart->Create_date = now();
+            $addcart->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'บันทึกข้อมูลสำเร็จ!',
+            ]); 
+        }catch (\Exception $e) {
+            // ส่ง Error Response หากเกิดข้อผิดพลาด
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage(),
+                ],
+                500,
+            );
+        }
+    }
+
+    public function Showcart()
+    {
+        try {
+            $cartProducts = TBCart_Product::where('Username',Auth::user()->Username)
+            ->with('Shop','product.images','product.categorys')
+            ->get();
+
+            return view('partials.shopping_cartdetail', compact('cartProducts'));
+        }catch (\Exception $e) {
+            // ส่ง Error Response หากเกิดข้อผิดพลาด
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage(),
+                ],
+                500,
+            );
+        }
+    }
+
+
 
     // // บันทึกสินค้าใหม่ลงฐานข้อมูล
     // public function store(Request $request)
