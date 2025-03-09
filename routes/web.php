@@ -33,6 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bookbanuser', [BookbankController::class, 'bookbanuser'])->name('bookbank.bookbanuser');
     Route::get('/bookbank/datauser', [BookbankController::class, 'getbookbankuser'])->name('bookbank.datauser');
     Route::get('/bookbanuser/create', [BookbankController::class, 'createbookbankuser'])->name('bookbank.createbookbankuser');
+    Route::post('/bookbank/insertBookbank', [BookbankController::class, 'insertBookbank'])->name('bookbank.insertBookbank');
+    Route::post('/bookbank/Changestatusused', [BookbankController::class, 'Changestatusused'])->name('bookbank.Changestatusused');
 
     Route::middleware('permission:P01')->group(function () {
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -61,11 +63,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bookbank', [BookbankController::class, 'index'])->name('bookbank.index');
         Route::get('/bookbank/data', [BookbankController::class, 'getbookbank'])->name('bookbank.data');
         Route::get('/bookbank/create', [BookbankController::class, 'create'])->name('bookbank.create');
-        Route::post('/bookbank/insertBookbank', [BookbankController::class, 'insertBookbank'])->name('bookbank.insertBookbank');
         Route::get('/bookbank/edit/{id}', [BookbankController::class, 'edit']);
         Route::post('/bookbank/update/{id}', [BookbankController::class, 'update'])->name('bookbank.update');
         Route::post('/bookbank/destroy/{id}', [BookbankController::class, 'destroy']);
-        Route::post('/bookbank/Changestatusused', [BookbankController::class, 'Changestatusused'])->name('bookbank.Changestatusused');
     });
 
     Route::post('/user/paymentPackage/{packageid}', [UserController::class, 'paymentPackage'])->name('user.paymentPackage');

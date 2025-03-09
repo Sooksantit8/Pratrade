@@ -28,6 +28,8 @@ class TBProducts extends Model
         'Price_Preorder',
         'Preorder',
         'Preorder_date',
+        'Use_Central_function',
+        'Bookbank',
         'Active',
         'Create_by',
         'Create_date',

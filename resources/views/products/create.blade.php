@@ -34,8 +34,8 @@
                                     <label class="form-label">รุ่นสินค้า
                                     </label>
                                     <div class="controls">
-                                        <input type="text" class="form-control"
-                                            name="Product_model" aria-autocomplete="none" id="Product_model" maxlength="45">
+                                        <input type="text" class="form-control" name="Product_model"
+                                            aria-autocomplete="none" id="Product_model" maxlength="45">
                                     </div>
                                 </div>
                             </div>
@@ -44,8 +44,8 @@
                                     <label class="form-label">เนื้อ
                                     </label>
                                     <div class="controls">
-                                        <input type="text" class="form-control"
-                                            name="Product_materials" aria-autocomplete="none" id="Product_materials" maxlength="45">
+                                        <input type="text" class="form-control" name="Product_materials"
+                                            aria-autocomplete="none" id="Product_materials" maxlength="45">
                                     </div>
                                 </div>
                             </div>
@@ -54,8 +54,8 @@
                                     <label class="form-label">ผู้สร้าง
                                     </label>
                                     <div class="controls">
-                                        <input type="text"  class="form-control"
-                                            name="Manufacturer" aria-autocomplete="none" id="Manufacturer" maxlength="100">
+                                        <input type="text" class="form-control" name="Manufacturer"
+                                            aria-autocomplete="none" id="Manufacturer" maxlength="100">
                                     </div>
                                 </div>
                             </div>
@@ -64,8 +64,8 @@
                                     <label class="form-label">ปีที่สร้าง
                                     </label>
                                     <div class="controls">
-                                        <input type="number" class="form-control"
-                                            name="Year_manufacture" aria-autocomplete="none" id="Year_manufacture" maxlength="4">
+                                        <input type="number" class="form-control" name="Year_manufacture"
+                                            aria-autocomplete="none" id="Year_manufacture" maxlength="4">
                                     </div>
                                 </div>
                             </div>
@@ -121,8 +121,8 @@
                                 </div>
                             </nav>
                             <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane fade mt-7" id="nav-PRE2" role="tabpanel" aria-labelledby="nav-PRE2"
-                                    tabindex="0">
+                                <div class="tab-pane fade mt-7" id="nav-PRE2" role="tabpanel"
+                                    aria-labelledby="nav-PRE2" tabindex="0">
                                     <div class="mb-7 form-group">
                                         <label class="form-label">วันที่พร้อมจำหน่าย <span class="text-danger">*</span>
                                         </label>
@@ -142,6 +142,90 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="mb-7">
+                            <label class="form-label">การชำระเงิน</label><span class="text-danger">*</span>
+                            <nav>
+                                <div class="nav nav-tabs justify-content-between align-items-center gap-9" id="nav-tab"
+                                    role="tablist">
+                                    @if ($mypackage->Central_Function ?? 1 == 1)
+                                        <label for="use"
+                                            class="form-check-label form-check p-3  border gap-2 rounded-2 d-flex flex-fill justify-content-center cursor-pointer"
+                                            data-bs-toggle="tab" data-bs-target="#nav-use" aria-controls="nav-use">
+                                            <input type="radio" class="form-check-input" name="UseCentralfunction" onclick="checkbookbank(this)"
+                                                id="use" value="use">
+                                            <span class="fs-4 text-dark">ชำระเงินผ่านบัญชีกลาง</span>
+                                        </label>
+                                    @endif
+                                    <label for="notuse"
+                                        class="form-check-label form-check p-3  border gap-2 rounded-2 d-flex flex-fill justify-content-center cursor-pointer"
+                                        data-bs-toggle="tab" data-bs-target="#nav-notuse" aria-controls="nav-notuse">
+                                        <input type="radio" class="form-check-input" name="UseCentralfunction" onclick="checkbookbank(this)"
+                                            id="notuse" value="notuse">
+                                        <span class="fs-4 text-dark">ชำระผ่านบัญชีตนเอง</span>
+                                    </label>
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade mt-7" id="nav-notuse" role="tabpanel"
+                                    aria-labelledby="nav-notuse" tabindex="0">
+                                    @if ($bookbank->count() > 1)
+                                        <div class="mb-7 form-group">
+                                            <label class="form-label">หมายเลขบัญชี
+                                            </label>
+                                            <div class="controls">
+                                                <div id="bookbankcontent">
+                                                    <select class="form-select mr-sm-2  mb-2" id="bookbank"
+                                                        name="bookbank" required>
+                                                        <option value="">--เลือกข้อมูล--</option>
+                                                        @foreach ($bookbank as $item)
+                                                            <option value="{{ $item->ID }}">
+                                                                {{ $item->Bookbanknumber }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="mb-7 form-group">
+                                            <label class="form-label">หมายเลขบัญชี <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="controls">
+                                                <input type="text" class="form-control bank-inputmask"
+                                                    aria-autocomplete="none" required name="Bookbanknumber"
+                                                    aria-autocomplete="none">
+                                            </div>
+                                        </div>
+                                        <div class="mb-7 form-group">
+                                            <label class="form-label">ชื่อบัญชี <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="controls">
+                                                <input type="text" class="form-control" required name="Bookbankname"
+                                                    aria-autocomplete="none" maxlength="45">
+                                            </div>
+                                        </div>
+                                        <div class="mb-7 form-group">
+                                            <label class="form-label">ธนาคาร <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="controls">
+                                                <input type="text" class="form-control" required name="Bankname"
+                                                    aria-autocomplete="none" maxlength="45">
+                                            </div>
+                                        </div>
+                                        <input type="hidden" class="form-control" required name="From"
+                                            id="From" aria-autocomplete="none" readonly maxlength="45">
+                                        <div class="mb-7 form-group">
+                                            <label class="form-label">QR CODE <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="controls">
+                                                <input class="form-control" type="file" name="Path_Image" required>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card">
@@ -150,8 +234,8 @@
                             <label class="form-label">ซื้อมาจาก
                             </label>
                             <div class="controls">
-                                <input type="text" class="form-control" name="Bought_from"
-                                    aria-autocomplete="none" id="Bought_from" maxlength="100">
+                                <input type="text" class="form-control" name="Bought_from" aria-autocomplete="none"
+                                    id="Bought_from" maxlength="100">
                             </div>
                         </div>
                         <div class="mb-7 form-group">
@@ -262,7 +346,7 @@
                 $("#Preorder_date").removeAttr('required');
                 $("#Preorder_date").val("");
 
-                ("#Price_Preorder").removeAttr('required');
+                $("#Price_Preorder").removeAttr('required');
                 $("#Price_Preorder").val("");
             }
         }
@@ -288,6 +372,16 @@
                         }
                     );
                 } else {
+                    var UseCentralfunction = $("input[name='UseCentralfunction']:checked").val() ?? "";
+
+                    if(UseCentralfunction == ""){
+                        toastr.info(
+                        "กรุณาเลือกวิธีชำระเงิน", {
+                            positionClass: "toastr toast-top-right",
+                            containerId: "toast-top-right",
+                        }
+                    );
+                    }
                     // ดึง CSRF token จาก meta tag
                     var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -306,6 +400,12 @@
                     formData.append("Year_manufacture", $("#Year_manufacture").val());
                     formData.append("Bought_from", $("#Bought_from").val());
                     formData.append("Purchase_price", $("#Purchase_price").val());
+                    formData.append("UseCentralfunction", $("input[name='UseCentralfunction']:checked").val());
+                    formData.append("bookbank", $("#bookbank").val() ?? "");
+                    formData.append("Bookbanknumber", $("input[name='Bookbanknumber']").val());
+                    formData.append("Bookbankname", $("input[name='Bookbankname']").val());
+                    formData.append("Bankname", $("input[name='Bankname']").val());
+                    formData.append("Path_Image", $("#formaddbookbank")[0]);
                     formData.append("Description", quill.root.innerHTML); // ข้อมูลจาก Quill Editor
 
                     // ส่งข้อมูลไฟล์ที่อัปโหลดจาก Dropzone
@@ -348,5 +448,26 @@
                 }
             }
         })
+
+        function checkbookbank(el){
+            if ($(el).val() == "notuse") {
+                $("input[name='Bookbanknumber']").attr('required', 'required');
+                $("input[name='Bookbankname']").attr('required', 'required');
+                $("input[name='Bankname']").attr('required', 'required');
+                $("input[name='Path_Image']").attr('required', 'required');
+                $("#bookbank").attr('required', 'required');
+            } else {
+                $("input[name='Bookbanknumber']").removeAttr('required');
+                $("input[name='Bookbankname']").removeAttr('required');
+                $("input[name='Bankname']").removeAttr('required');
+                $("input[name='Path_Image']").removeAttr('required');
+
+                $("input[name='Bookbanknumber']").val('');
+                $("input[name='Bookbankname']").val('');
+                $("input[name='Bankname']").val('');
+                $("input[name='Path_Image']").val('');
+                $("#bookbank").val('');
+            }
+        }
     </script>
 @endpush

@@ -56,7 +56,6 @@
                             <th>หมายเลขบัญชี</th>
                             <th>ชื่อบัญชี</th>
                             <th>ธนาคาร</th>
-                            <th></th>
                             <th>จัดการ</th>
                         </tr>
                     </thead>
@@ -95,13 +94,6 @@
                     name: 'Bankname'
                 },
                 {
-                    data: 'Used',
-                    name: 'Used',
-                    orderable: false,
-                    searchable: false,
-                    className: 'text-center'
-                },
-                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
@@ -117,36 +109,6 @@
             });
             $("#btn-search").click(function () {
                 table.draw();
-            });
-        });
-
-        $(document).on('change', '.form-check-input', function () {
-            // ยกเลิก Checked ของ Checkbox อื่นทั้งหมด
-            $('.form-check-input').not(this).prop('checked', false);
-
-            const isChecked = $(this).prop('checked');
-            const rowId = $(this).data('id'); // ดึง ID ของแถว
-
-            // ส่งค่าไปยัง backend
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: '/bookbank/Changestatusused', // URL ของ API
-                method: 'POST',
-                data: {
-                    id: rowId,
-                    used: isChecked ? 1 : 0,
-                    From : 'user'
-                },
-                success: function (response) {
-                    console.log('Updated successfully:', response);
-                },
-                error: function (xhr) {
-                    console.error('Error updating status:', xhr.responseText);
-                },
             });
         });
     </script>

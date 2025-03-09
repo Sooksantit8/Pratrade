@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\TBBookbank;
 use App\Models\TBProducts;
 use App\Models\TBLookup;
 use App\Models\TBImage_Product;
 use App\Models\TBCategory;
 use App\Models\TBProduct_Category;
 use App\Models\TBCart_Product;
+use App\Models\TBPackage;
 use App\Models\TBUser_Package_History;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
@@ -52,12 +54,18 @@ class ProductController extends Controller
         $preorders = TBLookup::where('Lookup_type', 'Preorder_status')->get();
         $categories = TBCategory::where('Active', 1)->orderBy('Category_name', 'asc')->get();
 
+        $mypackage = TBPackage::where('ID',Auth::user()->Package)->first();
+        $bookbank = TBBookbank::where('From','user')
+        ->where('Active',1)
+        ->where('Create_by', Auth::user()->Username)->get();
+
         // ส่งข้อมูลไปยัง View
-        return view('products.create', compact('preorders', 'categories'));
+        return view('products.create', compact('preorders', 'categories','mypackage','bookbank'));
     }
 
     public function insertProduct(Request $request)
     {
+        dd($request);
         DB::beginTransaction(); // เริ่มการทำธุรกรรม
         try {
             $category = $array = explode(',', $request->Category);
@@ -77,6 +85,36 @@ class ProductController extends Controller
             $product->Bought_from = $request->Bought_from ?? null;
             $product->Purchase_price = $request->Purchase_price ?? null;
             $product->Active = 1;
+            if($request->UseCentralfunction == "notuse"){
+                $product->Use_Central_function = 0;
+                if($request->bookbank != ""){
+                    $product->bookbank = $request->bookbank;
+                }else{
+                    $bookbank = new TBBookbank();
+                    $bookbank->Bookbanknumber = $request->Bookbanknumber;
+                    $bookbank->Bookbankname = $request->Bookbankname;
+                    $bookbank->Bankname = $request->Bankname;
+                    $bookbank->Active = 1;
+                    $bookbank->From = $request->From;
+                    $bookbank->Create_by = Auth::user()->Username;
+                    $bookbank->Create_date = now();
+                    if ($request->hasFile('Path_Image')) {
+                        $path = $request->file('Path_Image')->store('bookbank_images', 'public');
+                        $bookbank->Path_Image = $path;
+                    }
+                    $bookbank->save();
+
+                    $product->bookbank = $bookbank->ID;
+                }
+            }else{
+                $product->Use_Central_function = 1;
+                $bookbankcentral = TBBookbank::where('Active',1)
+                ->where("Used",1)
+                ->where('From','admin')
+                ->first();
+
+                $product->bookbank = $bookbankcentral->ID;
+            }
             $product->Create_by = Auth::user()->Username;
             $product->Create_date = now();
             $product->save();
@@ -192,63 +230,4 @@ class ProductController extends Controller
             );
         }
     }
-
-
-
-    // // บันทึกสินค้าใหม่ลงฐานข้อมูล
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'Product_name' => 'required',
-    //         'Price' => 'required|numeric',
-    //         'Category' => 'required',
-    //         'Preorder' => 'nullable|boolean',
-    //         'Preorder_date' => 'nullable|date',
-    //         'Active' => 'nullable|boolean',
-    //         'Create_by' => 'nullable|string',
-    //         'Create_date' => 'nullable|date',
-    //     ]);
-
-    //     // สร้างสินค้าใหม่
-    //     Product::create($request->all());
-
-    //     return redirect()->route('products.index')->with('success', 'Product created successfully.');
-    // }
-
-    // // แสดงหน้าฟอร์มแก้ไขสินค้า
-    // public function edit($id)
-    // {
-    //     $product = Product::findOrFail($id);
-    //     return view('products.edit', compact('product'));
-    // }
-
-    // // อัปเดตข้อมูลสินค้าในฐานข้อมูล
-    // public function update(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'Product_name' => 'required',
-    //         'Price' => 'required|numeric',
-    //         'Category' => 'required',
-    //         'Preorder' => 'nullable|boolean',
-    //         'Preorder_date' => 'nullable|date',
-    //         'Active' => 'nullable|boolean',
-    //         'Update_by' => 'nullable|string',
-    //         'Update_date' => 'nullable|date',
-    //     ]);
-
-    //     // ค้นหาสินค้าตาม ID และอัปเดตข้อมูล
-    //     $product = Product::findOrFail($id);
-    //     $product->update($request->all());
-
-    //     return redirect()->route('products.index')->with('success', 'Product updated successfully.');
-    // }
-
-    // // ลบสินค้าออกจากฐานข้อมูล
-    // public function destroy($id)
-    // {
-    //     $product = Product::findOrFail($id);
-    //     $product->delete();
-
-    //     return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
-    // }
 }

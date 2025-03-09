@@ -35,17 +35,17 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
                         <span>
-                            <i class="ti ti-history"></i>
+                            <i class="ti ti-category"></i>
                         </span>
-                        <span class="hide-menu">ประวัติการเช่าพระ</span>
+                        <span class="hide-menu">รายการที่ลงประกาศ</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
                         <span>
-                            <i class="ti ti-category"></i>
+                            <i class="ti ti-history"></i>
                         </span>
-                        <span class="hide-menu">รายการที่ลงประกาศ</span>
+                        <span class="hide-menu">ประวัติการเช่าพระ</span>
                     </a>
                 </li>
                 <li class="sidebar-item">

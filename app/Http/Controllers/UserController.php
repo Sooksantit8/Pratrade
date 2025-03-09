@@ -248,7 +248,10 @@ class UserController extends Controller
 
     public function purpayment($packageid)
     {
-        $bookbank = TBBookbank::where('Active',1)->where("Used",1)->first();
+        $bookbank = TBBookbank::where('Active',1)
+        ->where("Used",1)
+        ->where('From','admin')
+        ->first();
         $package = TBPackage::where('Active',1)->where("id",$packageid)->first();
         return view('pricing.payment', compact("package","bookbank"));
     }
