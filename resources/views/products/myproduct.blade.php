@@ -65,6 +65,36 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="updatestatus" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h4 class="modal-title" id="myModalLabel">
+                        อัพเดทสถานะ
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-select mr-sm-2  mb-2" id="bookbank" name="bookbank" required>
+                        <option value="">--เลือกข้อมูล--</option>
+                        @foreach ($Substatusproduct as $item)
+                            <option value="{{ $item->Lookup_code }}">
+                                {{ $item->Lookup_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-danger-subtle text-danger  waves-effect" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -134,5 +164,60 @@
                 table.draw();
             });
         });
+
+        function deleteproduct(id) {
+            Swal.fire({
+                title: "คุณแน่ใจหรือไม่?",
+                text: "คุณจะไม่สามารถย้อนกลับสิ่งนี้ได้!",
+                type: "warning",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก",
+                closeOnConfirm: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    // ส่งคำขอลบผ่าน Ajax
+                    $.ajax({
+                        url: '/product/destroy/' + id, // แก้ไขเป็น /categories/{id}
+                        type: 'POST',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ!',
+                                    text: response.message,
+                                    showConfirmButton: true
+                                }).then(() => {
+                                    window.location.href = "{{ route('product.myproduct') }}";
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'ผิดพลาด!',
+                                    text: response.message,
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", {
+                                positionClass: "toastr toast-top-right",
+                                containerId: "toast-top-right",
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function Updatestatus(id){
+            $("#updatestatus").modal("show")
+        }
     </script>
 @endpush

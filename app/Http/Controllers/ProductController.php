@@ -28,7 +28,8 @@ class ProductController extends Controller
     public function myproduct()
     {
         $preorders = TBLookup::where('Lookup_type', 'Preorder_status')->get();
-        return view('products.myproduct',compact('preorders'));
+        $Substatusproduct = TBLookup::where('Lookup_type', 'Substatusproduct')->get();
+        return view('products.myproduct',compact('preorders','Substatusproduct'));
     }
 
     public function getProduct(Request $request)
@@ -36,6 +37,7 @@ class ProductController extends Controller
 
         if ($request->ajax()) {
             $query = TBProducts::where('Active', 1)
+                ->where('Is_latest', 1)
                 ->where('Create_by', Auth::user()->Username)
                 ->with('Preorderstatus', 'Substatusproduct');
 
@@ -72,7 +74,9 @@ class ProductController extends Controller
                         if (($row->Substatusproduct->Lookup_name ?? "") != "") {
                             $str_substatus = $row->Substatusproduct->Lookup_name;
                         }
-                        $Substatusproduct = '<a href="javascript:void(0)" class="edit" data-id="' .
+                        $Substatusproduct = '<a href="javascript:void(0)" onclick="Updatestatus(\'' .
+                        $row->ID .
+                        '\')" class="edit" data-id="' .
                             $row->ID .
                             '" style="color: #5d87ff;">
                         ' .
@@ -182,14 +186,15 @@ class ProductController extends Controller
             $Main_Product = "";
             if(isset($request->ID) && $request->ID != ""){
                 $Product = TBProducts::find($request->ID);
-                TBProducts::where('Main_Product', $Main_Product)
-                ->orWhere('Main_Product',$Product->Main_Product)
-                ->update(['Is_latest' => 0, 'Update_date' => now(),'Update_by'=>Auth::user()->Username]);
                 if(isset($Product->Main_Product) && $Product->Main_Product != ""){
                     $Main_Product = $Product->Main_Product;
                 }else{
                     $Main_Product = $request->ID;
                 }
+
+                TBProducts::where('ID', $Main_Product)
+                ->orWhere('Main_Product',$Main_Product)
+                ->update(['Is_latest' => 0, 'Update_date' => now(),'Update_by'=>Auth::user()->Username]);
             }
 
             $category = $array = explode(',', $request->Category);
@@ -361,6 +366,30 @@ class ProductController extends Controller
 
             return view('partials.shopping_cartdetail', compact('cartProducts'));
         }catch (\Exception $e) {
+            // ส่ง Error Response หากเกิดข้อผิดพลาด
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage(),
+                ],
+                500,
+            );
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            TBProducts::where('ID', $id)
+                ->orWhere('Main_Product',$id)
+                ->update(['Active' => 0, 'Update_date' => now(),'Update_by'=>Auth::user()->Username]);
+
+            // ส่ง Response กลับไป
+            return response()->json([
+                'success' => true,
+                'message' => 'ลบข้อมูลสำเร็จ!',
+            ]);
+        } catch (\Exception $e) {
             // ส่ง Error Response หากเกิดข้อผิดพลาด
             return response()->json(
                 [

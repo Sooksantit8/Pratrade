@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/product/detail/{id}', [ProductController::class, 'detail'])->name('product.detail');
     Route::post('/product/addcart/{id}', [ProductController::class, 'addCart'])->name('product.addCart');
     Route::get('/product/Showcart', [ProductController::class, 'Showcart'])->name('product.Showcart');
+    Route::post('/product/destroy/{id}', [ProductController::class, 'destroy']);
 
     Route::get('/bookbanuser', [BookbankController::class, 'bookbanuser'])->name('bookbank.bookbanuser');
     Route::get('/bookbank/datauser', [BookbankController::class, 'getbookbankuser'])->name('bookbank.datauser');

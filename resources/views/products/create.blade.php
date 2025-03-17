@@ -45,7 +45,7 @@
                                     </label>
                                     <div class="controls">
                                         <input type="text" class="form-control" name="Product_materials"
-                                            aria-autocomplete="none" id="Product_materials" maxlength="45" value="{{$product->Product_model ?? ""}}">
+                                            aria-autocomplete="none" id="Product_materials" maxlength="45" value="{{$product->Product_materials ?? ""}}">
                                     </div>
                                 </div>
                             </div>
@@ -471,7 +471,13 @@
                                     text: response.message,
                                     showConfirmButton: false
                                 }).then(() => {
-                                    window.location.href = "{{ route('product.create') }}";
+                                    var ID = '{{$product->ID ?? ""}}';
+                                    if(ID == ""){
+                                        window.location.href = "{{ route('product.create') }}";
+                                    }else{
+                                        window.location.href = "{{ route('product.myproduct') }}";
+                                    }
+                                    
                                 });
                             } else {
                                 Swal.fire({
