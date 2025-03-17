@@ -14,6 +14,7 @@ class TBProducts extends Model
 
     // กำหนดคอลัมน์ที่สามารถกรอกข้อมูลได้
     protected $fillable = [
+        'Main_Product',
         'Product_name',
         'Product_model',
         'Product_materials',
@@ -31,6 +32,7 @@ class TBProducts extends Model
         'Use_Central_function',
         'Bookbank',
         'Active',
+        'Is_latest',
         'Create_by',
         'Create_date',
         'Update_by',
@@ -62,5 +64,16 @@ class TBProducts extends Model
     public function categorys()
     {
         return $this->hasMany(TBProduct_Category::class, 'Product_ID', 'ID');
+    }
+    public function Preorderstatus()
+    {
+        return $this->belongsTo(TBLookup::class, 'Preorder', 'Lookup_code')
+                    ->where('Lookup_type', 'Preorder_status');
+    }
+
+    public function Substatusproduct()
+    {
+        return $this->belongsTo(TBLookup::class, 'Preorder_substatus', 'Lookup_code')
+                    ->where('Lookup_type', 'Substatusproduct');
     }
 }

@@ -36,6 +36,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bookbank/insertBookbank', [BookbankController::class, 'insertBookbank'])->name('bookbank.insertBookbank');
     Route::post('/bookbank/Changestatusused', [BookbankController::class, 'Changestatusused'])->name('bookbank.Changestatusused');
 
+    Route::get('/myproduct', [ProductController::class, 'myproduct'])->name('product.myproduct');
+    Route::get('/myproduct/data', [ProductController::class, 'getProduct'])->name('product.data');
+    Route::get('/myproduct/edit/{id}', [ProductController::class, 'edit'])->name('product.edit');
+
     Route::middleware('permission:P01')->group(function () {
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/data', [CategoryController::class, 'getCategories'])->name('categories.data');

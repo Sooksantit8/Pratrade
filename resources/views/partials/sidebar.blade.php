@@ -35,6 +35,14 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('product.create') }}" aria-expanded="false">
                         <span>
+                            <i class="ti ti-heart"></i>
+                        </span>
+                        <span class="hide-menu">รายการที่ชื่นชอบ</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('product.myproduct') }}" aria-expanded="false">
+                        <span>
                             <i class="ti ti-category"></i>
                         </span>
                         <span class="hide-menu">รายการที่ลงประกาศ</span>

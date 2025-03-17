@@ -21,27 +21,7 @@
                         <ul class="list-unstyled d-flex align-items-center mb-0">
                             <li>
                                 <a class="me-1" href="javascript:void(0)">
-                                    <i class="ti ti-star text-warning"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="me-1" href="javascript:void(0)">
-                                    <i class="ti ti-star text-warning"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="me-1" href="javascript:void(0)">
-                                    <i class="ti ti-star text-warning"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="me-1" href="javascript:void(0)">
-                                    <i class="ti ti-star text-warning"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">
-                                    <i class="ti ti-star text-warning"></i>
+                                    <i class="ti ti-heart text-danger"></i>
                                 </a>
                             </li>
                         </ul>

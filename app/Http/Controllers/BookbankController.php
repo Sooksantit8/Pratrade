@@ -54,6 +54,17 @@ class BookbankController extends Controller
                     </div>
                 ';
                 })
+                ->addColumn('Substatusproduct', function ($row) {
+                    if ($row->Used == 1) {
+                        return '<div class="form-check form-switch py-2">
+                                    <input class="form-check-input" type="checkbox" checked data-id="' . $row->ID . '">
+                                </div>';
+                    } else {
+                        return '<div class="form-check form-switch py-2">
+                                    <input class="form-check-input" type="checkbox" data-id="' . $row->ID . '">
+                                </div>';
+                    }
+                })
                 ->addColumn('Used', function ($row) {
                     if ($row->Used == 1) {
                         return '<div class="form-check form-switch py-2">

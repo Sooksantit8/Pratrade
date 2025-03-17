@@ -26,7 +26,7 @@
                                 </label>
                                 <div class="controls">
                                     <input type="text" class="form-control" required name="Product_name"
-                                        aria-autocomplete="none" id="Product_name" maxlength="100">
+                                        aria-autocomplete="none" id="Product_name" maxlength="100" value="{{$product->Product_Name ?? ""}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -35,7 +35,7 @@
                                     </label>
                                     <div class="controls">
                                         <input type="text" class="form-control" name="Product_model"
-                                            aria-autocomplete="none" id="Product_model" maxlength="45">
+                                            aria-autocomplete="none" id="Product_model" maxlength="45" value="{{$product->Product_model ?? ""}}">
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                                     </label>
                                     <div class="controls">
                                         <input type="text" class="form-control" name="Product_materials"
-                                            aria-autocomplete="none" id="Product_materials" maxlength="45">
+                                            aria-autocomplete="none" id="Product_materials" maxlength="45" value="{{$product->Product_model ?? ""}}">
                                     </div>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
                                     </label>
                                     <div class="controls">
                                         <input type="text" class="form-control" name="Manufacturer"
-                                            aria-autocomplete="none" id="Manufacturer" maxlength="100">
+                                            aria-autocomplete="none" id="Manufacturer" maxlength="100" value="{{$product->Manufacturer ?? ""}}">
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                                     </label>
                                     <div class="controls">
                                         <input type="number" class="form-control" name="Year_manufacture"
-                                            aria-autocomplete="none" id="Year_manufacture" maxlength="4">
+                                            aria-autocomplete="none" id="Year_manufacture" maxlength="4" value="{{$product->Year_manufacture ?? ""}}">
                                     </div>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                             <label class="form-label">ราคาสินค้า <span class="text-danger">*</span>
                             </label>
                             <div class="controls">
-                                <input type="number" class="form-control" required name="Price" aria-autocomplete="none">
+                                <input type="number" value="{{$product->Price ?? ""}}" class="form-control" required name="Price" aria-autocomplete="none">
                             </div>
                         </div>
                         <div class="mb-7 form-group">
@@ -97,7 +97,7 @@
                             </label>
                             <div class="controls">
                                 <input type="number" class="form-control" required name="Stock_qty"
-                                    aria-autocomplete="none">
+                                    aria-autocomplete="none" value="{{$product->Stock_qty ?? ""}}">
                             </div>
                         </div>
                         <div class="mb-7">
@@ -111,9 +111,9 @@
                                             id="customControlValidation2" id="nav-tab-{{ $preorder->Lookup_code }}"
                                             data-bs-toggle="tab" data-bs-target="#nav-{{ $preorder->Lookup_code }}"
                                             aria-controls="nav-{{ $preorder->Lookup_code }}">
-                                            <input type="radio" class="form-check-input" name="Preorder"
+                                            <input type="radio" class="form-check-input preoderstatus" name="Preorder"
                                                 id="{{ $preorder->Lookup_code }}" value="{{ $preorder->Lookup_code }}"
-                                                @if ($preorder->Lookup_code == 'PRE1') checked @endif
+                                                @if ($preorder->Lookup_code == ($product->Preorder ?? "PRE1")) checked @endif
                                                 onclick = "enable_disable_required(this)">
                                             <span class="fs-4 text-dark">{{ $preorder->Lookup_name }}</span>
                                         </label>
@@ -128,7 +128,9 @@
                                         </label>
                                         <div class="controls">
                                             <input type="date" class="form-control" name="Preorder_date"
-                                                id="Preorder_date" required aria-autocomplete="none">
+                                            id="Preorder_date"
+                                            value="{{ ($product->Preorder_date ?? "") ? \Carbon\Carbon::parse($product->Preorder_date)->format('Y-m-d') : '' }}"
+                                            required aria-autocomplete="none">
                                         </div>
                                     </div>
                                     <div class="mb-7 form-group">
@@ -136,13 +138,12 @@
                                         </label>
                                         <div class="controls">
                                             <input type="number" class="form-control" id="Price_Preorder"
-                                                name="Price_Preorder" aria-autocomplete="none">
+                                                name="Price_Preorder" value="{{$product->Price_Preorder ?? ""}}" aria-autocomplete="none">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="mb-7">
                             <label class="form-label">การชำระเงิน</label><span class="text-danger">*</span>
                             <nav>
@@ -153,14 +154,14 @@
                                             class="form-check-label form-check p-3  border gap-2 rounded-2 d-flex flex-fill justify-content-center cursor-pointer"
                                             data-bs-toggle="tab" data-bs-target="#nav-use" aria-controls="nav-use">
                                             <input type="radio" class="form-check-input" name="UseCentralfunction" onclick="checkbookbank(this)"
-                                                id="use" value="use">
+                                                id="use" value="use" @if (isset($product->Use_Central_function) && $product->Use_Central_function == 1) checked @endif>
                                             <span class="fs-4 text-dark">ชำระเงินผ่านบัญชีกลาง</span>
                                         </label>
                                     @endif
                                     <label for="notuse"
                                         class="form-check-label form-check p-3  border gap-2 rounded-2 d-flex flex-fill justify-content-center cursor-pointer"
                                         data-bs-toggle="tab" data-bs-target="#nav-notuse" aria-controls="nav-notuse">
-                                        <input type="radio" class="form-check-input" name="UseCentralfunction" onclick="checkbookbank(this)"
+                                        <input type="radio" class="form-check-input" name="UseCentralfunction" @if (isset($product->Use_Central_function) && $product->Use_Central_function == 0) checked @endif onclick="checkbookbank(this)"
                                             id="notuse" value="notuse">
                                         <span class="fs-4 text-dark">ชำระผ่านบัญชีตนเอง</span>
                                     </label>
@@ -235,14 +236,14 @@
                             </label>
                             <div class="controls">
                                 <input type="text" class="form-control" name="Bought_from" aria-autocomplete="none"
-                                    id="Bought_from" maxlength="100">
+                                    id="Bought_from" maxlength="100" value="{{$product->Bought_from ?? ""}}">
                             </div>
                         </div>
                         <div class="mb-7 form-group">
                             <label class="form-label">ราคาที่ซื้อมา
                             </label>
                             <div class="controls">
-                                <input type="number" class="form-control" name="Purchase_price" id="Purchase_price"
+                                <input type="number" class="form-control" value="{{$product->Purchase_price ?? ""}}" name="Purchase_price" id="Purchase_price"
                                     aria-autocomplete="none">
                             </div>
                         </div>
@@ -289,23 +290,62 @@
             theme: "snow",
         });
 
+        let existingContent = @json(($product->Description ?? "")); // โหลดเนื้อหาจากฐานข้อมูล
+        quill.root.innerHTML = existingContent; // ใส่ค่าใน Editor
+
         // ปิดการ auto-discover ของ Dropzone
         Dropzone.autoDiscover = false;
 
         // กำหนด Dropzone
+        Dropzone.autoDiscover = false;
+
+        var deletedFiles = []; // เก็บรายการไฟล์ที่ถูกลบ (แต่ยังไม่ส่งไปลบจริง)
+
         var myDropzone = new Dropzone("#my-dropzone", {
-            url: "/upload", // URL สำหรับอัปโหลดไฟล์ (ต้องเปลี่ยนตาม Backend)
+            url: "/upload", // เปลี่ยนเป็น URL ที่ใช้งานจริง
             autoProcessQueue: false, // อัปโหลดเมื่อกด submit เท่านั้น
             maxFiles: 5,
-            maxFilesize: 10, // ขนาดไฟล์สูงสุด (MB)
-            acceptedFiles: ".jpg,.png,.jpeg", // ประเภทไฟล์
+            maxFilesize: 10, // MB
+            acceptedFiles: ".jpg,.png,.jpeg",
             addRemoveLinks: true,
             dictDefaultMessage: "ลากและวางไฟล์ที่นี่ หรือคลิกเพื่อเลือกไฟล์",
+            init: function () {
+                let dropzoneInstance = this;
+                let existingFiles = @json($images ?? []);
+
+                if (existingFiles.length > 0) {
+                    existingFiles.forEach(function (file) {
+                        let mockFile = { id: file.id,name: file.name, size: file.size, url: file.url };
+
+                        dropzoneInstance.emit("addedfile", mockFile);
+                        dropzoneInstance.emit("thumbnail", mockFile, file.url);
+                        dropzoneInstance.emit("complete", mockFile);
+
+                        // 🛠 ป้องกันไม่ให้ Dropzone ลบไฟล์เก่าอัตโนมัติ
+                        mockFile.accepted = true;
+                        dropzoneInstance.files.push(mockFile);
+                    });
+                }
+
+                this.on("removedfile", function (file) {
+                    if (file.id) { // ถ้ามี id
+                        deletedFiles.push(file.id); // เพิ่ม id ของไฟล์ที่ถูกลบลงใน deletedFiles
+                    }
+                });
+            }
         });
 
 
         $(document).ready(function() {
+            $(".preoderstatus:checked").click()
+            let selectedCategories = @json($product_category ?? []);
+            
             $(".select2").select2();
+
+            if(selectedCategories.length > 0){
+                $("#Category").val(selectedCategories).trigger("change");
+            }
+            
             $("#formaddproduct").validate({
                 errorPlacement: function(error, element) {
                     if (element.hasClass("select2-hidden-accessible")) {
@@ -324,6 +364,7 @@
                     }
                 },
             });
+            
         });
 
 
@@ -388,12 +429,14 @@
                     // ดึงข้อมูลที่กรอกในฟอร์ม
                     var formData = new FormData();
                     formData.append("_token", csrfToken); // เพิ่ม CSRF token
+                    formData.append("ID", '{{$product->ID ?? ""}}');
                     formData.append("Product_name", $("#Product_name").val());
                     formData.append("Category", $("#Category").val());
                     formData.append("Price", $("input[name='Price']").val());
                     formData.append("Stock_qty", $("input[name='Stock_qty']").val());
                     formData.append("Preorder", $("input[name='Preorder']:checked").val());
                     formData.append("Preorder_date", $("#Preorder_date").val());
+                    formData.append("Price_Preorder", $("#Price_Preorder").val());
                     formData.append("Product_model", $("#Product_model").val());
                     formData.append("Product_materials", $("#Product_materials").val());
                     formData.append("Manufacturer", $("#Manufacturer").val());
