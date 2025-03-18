@@ -76,7 +76,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <select class="form-select mr-sm-2  mb-2" id="bookbank" name="bookbank" required>
+                    <select class="form-select mr-sm-2  mb-2" id="Substatusproduct" name="Substatusproduct" required>
                         <option value="">--เลือกข้อมูล--</option>
                         @foreach ($Substatusproduct as $item)
                             <option value="{{ $item->Lookup_code }}">
@@ -86,8 +86,12 @@
                     </select>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" id="Savestatus"
+                        class="btn bg-primary-subtle text-primary  waves-effect text-start">
+                        บันทึก
+                    </button>
                     <button type="button" class="btn bg-danger-subtle text-danger  waves-effect" data-bs-dismiss="modal">
-                        Close
+                        ปิด
                     </button>
                 </div>
             </div>
@@ -216,8 +220,51 @@
             });
         }
 
-        function Updatestatus(id){
+        function Updatestatus(id,el){
+            var status = $(el).attr("data-status");
+            $("#Substatusproduct").val(status);
+            $("#Substatusproduct").change();
+            $("#Savestatus").attr("data-id",id);
             $("#updatestatus").modal("show")
         }
+
+        $("#Savestatus").click(function(){
+            var id = $(this).attr("data-id");
+            var Substatusproduct = $("#Substatusproduct").val();
+            $.ajax({
+                url: '/product/updatestatus/' + id,
+                type: 'POST',
+                data: {
+                    Substatusproduct : Substatusproduct
+                },
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ!',
+                            text: response.message,
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location.href = "{{ route('product.myproduct') }}";
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ผิดพลาด!',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", {
+                        positionClass: "toastr toast-top-right",
+                        containerId: "toast-top-right",
+                    });
+                }
+            });
+        });
     </script>
 @endpush

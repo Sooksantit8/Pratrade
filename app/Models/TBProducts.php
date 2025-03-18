@@ -11,6 +11,8 @@ class TBProducts extends Model
     use HasFactory;
 
     protected $table = 'TBProducts'; // กำหนดชื่อตารางให้ตรงกับฐานข้อมูล
+    public $incrementing = false;
+    protected $primaryKey = 'ID';
 
     // กำหนดคอลัมน์ที่สามารถกรอกข้อมูลได้
     protected $fillable = [
@@ -28,6 +30,7 @@ class TBProducts extends Model
         'Stock_qty',
         'Price_Preorder',
         'Preorder',
+        'Preorder_substatus',
         'Preorder_date',
         'Use_Central_function',
         'Bookbank',

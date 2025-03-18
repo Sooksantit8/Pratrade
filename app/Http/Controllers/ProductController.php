@@ -74,9 +74,9 @@ class ProductController extends Controller
                         if (($row->Substatusproduct->Lookup_name ?? "") != "") {
                             $str_substatus = $row->Substatusproduct->Lookup_name;
                         }
-                        $Substatusproduct = '<a href="javascript:void(0)" onclick="Updatestatus(\'' .
+                        $Substatusproduct = '<a href="javascript:void(0)" data-status="'.$row->Preorder_substatus.'" onclick="Updatestatus(\'' .
                         $row->ID .
-                        '\')" class="edit" data-id="' .
+                        '\',this)" class="edit" data-id="' .
                             $row->ID .
                             '" style="color: #5d87ff;">
                         ' .
@@ -390,6 +390,31 @@ class ProductController extends Controller
                 'message' => 'ลบข้อมูลสำเร็จ!',
             ]);
         } catch (\Exception $e) {
+            // ส่ง Error Response หากเกิดข้อผิดพลาด
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage(),
+                ],
+                500,
+            );
+        }
+    }
+
+    public function updatestatus($id,Request $request)
+    {
+        try {
+            $Product = TBProducts::findOrFail($id);
+            $Product->Preorder_substatus = $request->Substatusproduct;
+            $Product->Update_by = Auth::user()->Username;
+            $Product->Update_date = now();
+            $Product->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'บันทึกข้อมูลสำเร็จ!',
+            ]); 
+        }catch (\Exception $e) {
             // ส่ง Error Response หากเกิดข้อผิดพลาด
             return response()->json(
                 [
